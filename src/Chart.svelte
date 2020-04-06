@@ -1,11 +1,18 @@
-
-<div class="row">
-<canvas id="myChart" width="3" height="1"></canvas>
-</div>
-
+  <div class="row">
+    <div class="col s12 m6">
+      <div class="card grey darken-4">
+        <div class="card-content white-text">
+          <span class="card-title">Cases in Switzerland</span>
+            <canvas id="myChart" width="3" height="1"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 <script>
+
 import {afterUpdate} from "svelte";
 import Chart from 'chart.js';
+Chart.defaults.global.defaultFontColor = '#c2c2c2';
 
 export let data;
 
@@ -21,7 +28,7 @@ myChart = new Chart(ctx, {
   type: 'line',
   data: {
       datasets: [{
-      label: 'Daily Cases',
+      label: 'Cases',
       data: data,
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)'
