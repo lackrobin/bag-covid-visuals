@@ -9,14 +9,17 @@ import {getEpicurveChartData} from "./util/chartDataUtils";
 
 const baseURL = 'https://bag-covid-api.herokuapp.com/api/';
 let canvasID = "myChart";
-let data = loadDataFromAPI();
+let parsedData = loadDataFromAPI();
+
+
 async function loadDataFromAPI(){
-	let data = [];
+	let parsedData = [];
 	const res = await fetch(baseURL+"data/latest");
-	data = await res.json();
-	data = getEpicurveChartData(data);
+	let data = await res.json();
+	parsedData.push(getEpicurveChartData(data));
+	
 	if (res.ok) {
-		return data;
+		return parsedData;
 	} else {
 		throw new Error(data);
 	}
@@ -24,12 +27,13 @@ async function loadDataFromAPI(){
 
 </script>
 <Header/>
-{#await data}
+{#await parsedData}
 <Preloader/>
-{:then data}
+{:then items}
 <div class="row">
+{#each items as data}
 	<Chart {data}/>
-	<Chart {data}/>
+{/each}
 </div>
 {:catch error}
 	{console.log(error)}
