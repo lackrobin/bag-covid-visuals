@@ -5,7 +5,7 @@ import '../node_modules/materialize-css/dist/js/materialize.min.js';
 import Header from './Header.svelte';
 import Chart from './Chart.svelte';
 import Preloader from './Preloader.svelte';
-import {getEpicurveChartData} from "./util/chartDataUtils";
+import {getEpicurveChartData ,getTotalDeathChartData, getTotalHospitChartData,getTotalInfectionAgeChartData} from "./util/chartDataUtils";
 
 const baseURL = 'https://bag-covid-api.herokuapp.com/api/';
 let canvasID = "myChart";
@@ -17,6 +17,9 @@ async function loadDataFromAPI(){
 	const res = await fetch(baseURL+"data/latest");
 	let data = await res.json();
 	parsedData.push(getEpicurveChartData(data));
+	parsedData.push(getTotalDeathChartData(data));
+	parsedData.push(getTotalHospitChartData(data));
+	parsedData.push(getTotalInfectionAgeChartData(data));
 
 	if (res.ok) {
 		return parsedData;

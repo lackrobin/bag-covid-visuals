@@ -1,8 +1,9 @@
     <div class="col s12 m6">
       <div class="card grey darken-4">
         <div class="card-content white-text">
-          <span class="card-title">Cases in Switzerland</span>
-            <canvas id="{canvasID}" width="3" height="1"></canvas>
+          <span class="card-title">{data.cardTitle}</span>
+          <!-- DODO works, but might need fixing - shows the ratio it was loaded in -->
+            <canvas id="{canvasID}" width="{data.type === "pie" && window.screen.width <= 480 ? '1' : '3'}" height="1"></canvas>
         </div>
       </div>
     </div>
