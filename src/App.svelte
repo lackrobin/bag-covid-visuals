@@ -17,7 +17,7 @@ async function loadDataFromAPI(){
 	const res = await fetch(baseURL+"data/latest");
 	let data = await res.json();
 	parsedData.push(getEpicurveChartData(data));
-	
+
 	if (res.ok) {
 		return parsedData;
 	} else {
@@ -32,7 +32,7 @@ async function loadDataFromAPI(){
 {:then items}
 <div class="row">
 {#each items as data}
-	<Chart {data}/>
+		<Chart {data}/>
 {/each}
 </div>
 {:catch error}

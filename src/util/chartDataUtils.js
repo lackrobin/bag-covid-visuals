@@ -11,7 +11,29 @@ function getEpicurveChartData(data){
 		}
 		chartData.push(chartElement);
     });
-    return chartData;
+    return {
+        type: "line",
+        data: {
+            datasets: [{
+            label: 'Cases',
+            data: chartData,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)'
+            ],
+            borderColor: [
+              'rgba(255,99,132,1)'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            xAxes: [{
+              type: 'time'
+            }]
+          }
+        }
+      };
 }
 
 
