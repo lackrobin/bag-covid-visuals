@@ -3,7 +3,7 @@
         <div class="card-content white-text">
           <span class="card-title">{data.cardTitle}</span>
           <!-- DODO works, but might need fixing - shows the ratio it was loaded in -->
-            <canvas id="{canvasID}" width="{data.type === "pie" && window.screen.width <= 480 ? '1' : '3'}" height="1"></canvas>
+            <canvas id="{canvasID}" width="{window.screen.width <= 480 ? '1' : '3'}" height="1"></canvas>
         </div>
       </div>
     </div>
