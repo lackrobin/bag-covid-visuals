@@ -23,8 +23,8 @@ data.forEach(element => {
           datasets: [{
           label: 'Cases',
           data: chartData,
-          backgroundColor: [chartColor[0]],
-          borderColor: [chartBorderColor[0]], 
+          backgroundColor: chartColor[0],
+          borderColor: chartBorderColor[0], 
           borderWidth: 1
         }]
       },
