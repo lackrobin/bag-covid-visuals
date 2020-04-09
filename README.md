@@ -17,7 +17,7 @@ Mobile:
 
 ## Run locally
 
-```
+```bash
 git clone https://github.com/lackrobin/bag-covid-visuals.git
 cd bag-covid-visuals
 npm install
