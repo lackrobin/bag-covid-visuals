@@ -21,7 +21,6 @@ let ctx;
 let myChart;
 
 function createChart(){
-console.log(data);
 let labels = [];
 ctx = document.getElementById(canvasID);
 if (myChart) myChart.destroy();

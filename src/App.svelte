@@ -11,19 +11,23 @@ getTotalHospitChartData,
 getTotalInfectionAgeChartData, 
 getHospitCurveChartData,
 getDeathCurveChartData,
-getInfectionCurveChartData} from "./util/chartDataUtils"; 
+getInfectionCurveChartData,
+getInfectionPerDayChartData,
+getHospitPerDayChartData,
+getDeathPerDayChartData} from "./util/chartDataUtils"; 
 
 
 const baseURL = 'https://bag-covid-api.herokuapp.com/api/';
 let parsedHospitData = loadHospitDataFromAPI();
 
 async function loadHospitDataFromAPI(){
-	let parsedHospitData = [];
+	let parsed = [];
 	const res = await fetch(baseURL+"hospit");
 	let data = await res.json();
 	if (res.ok) {
-		parsedHospitData.push(getHospitCurveChartData(data));
-		return parsedHospitData;
+		parsed.push(getHospitCurveChartData(data));
+		parsed.push(getHospitPerDayChartData(data));
+		return parsed;
 	} else {
 		throw new Error(data);
 	}
@@ -31,12 +35,13 @@ async function loadHospitDataFromAPI(){
 let parsedInfectionData = loadInfectedDataFromAPI();
 
 async function loadInfectedDataFromAPI(){
-	let parsedHospitData = [];
+	let parsed = [];
 	const res = await fetch(baseURL+"infection");
 	let data = await res.json();
 	if (res.ok) {
-		parsedHospitData.push(getInfectionCurveChartData(data));
-		return parsedHospitData;
+		parsed.push(getInfectionCurveChartData(data));
+		parsed.push(getInfectionPerDayChartData(data));
+		return parsed;
 	} else {
 		throw new Error(data);
 	}
@@ -45,12 +50,13 @@ async function loadInfectedDataFromAPI(){
 let parsedDeathData = loadDeathDataFromAPI();
 
 async function loadDeathDataFromAPI(){
-	let parsedHospitData = [];
+	let parsed = [];
 	const res = await fetch(baseURL+"death");
 	let data = await res.json();
 	if (res.ok) {
-		parsedHospitData.push(getDeathCurveChartData(data));
-		return parsedHospitData;
+		parsed.push(getDeathCurveChartData(data));
+		parsed.push(getDeathPerDayChartData(data));
+		return parsed;
 	} else {
 		throw new Error(data);
 	}
