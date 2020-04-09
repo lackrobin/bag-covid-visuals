@@ -97,9 +97,15 @@ async function loadDataFromAPI(){
 	{console.log(error)}
 {/await}
 
-{#await parsedInfectionData}
-<Preloader/>
-{:then items}
+{#await parsedInfectionData then items}
+{#each items as data}
+		<Chart {data}/>
+{/each}
+{:catch error}
+	{console.log(error)}
+{/await}
+
+{#await parsedHospitData then items}
 {#each items as data}
 		<Chart {data}/>
 {/each}
@@ -108,20 +114,7 @@ async function loadDataFromAPI(){
 	{console.log(error)}
 {/await}
 
-{#await parsedHospitData}
-<Preloader/>
-{:then items}
-{#each items as data}
-		<Chart {data}/>
-{/each}
-
-{:catch error}
-	{console.log(error)}
-{/await}
-
-{#await parsedDeathData}
-<Preloader/>
-{:then items}
+{#await parsedDeathData then items}
 {#each items as data}
 		<Chart {data}/>
 {/each}
