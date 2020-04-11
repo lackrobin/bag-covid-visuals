@@ -1,33 +1,37 @@
-    <div class="col s12 m6">
-      <div class="card grey darken-4">
-        <div class="card-content white-text">
-          <span class="card-title">{data.cardTitle}</span>
-          <!-- DODO works, but might need fixing - shows the ratio it was loaded in -->
-            <canvas id="{canvasID}" width="{window.screen.width <= 480 ? '1' : '3'}" height="1"></canvas>
-        </div>
-      </div>
-    </div>
 <script>
+  import { afterUpdate } from "svelte";
+  import Chart from "chart.js";
+  Chart.defaults.global.defaultFontColor = "#c2c2c2";
 
-import {afterUpdate} from "svelte";
-import Chart from 'chart.js';
-Chart.defaults.global.defaultFontColor = '#c2c2c2';
+  export let data;
 
-export let data;
+  let canvasID = Math.random()
+    .toString(36)
+    .replace(/[^a-z]+/g, "")
+    .substr(0, 5);
 
-let canvasID = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+  let ctx;
+  let myChart;
 
-let ctx;
-let myChart;
+  function createChart() {
+    let labels = [];
+    ctx = document.getElementById(canvasID);
+    if (myChart) myChart.destroy();
+    myChart = new Chart(ctx, data);
+  }
 
-function createChart(){
-let labels = [];
-ctx = document.getElementById(canvasID);
-if (myChart) myChart.destroy();
-myChart = new Chart(ctx, data);
-}
-
-afterUpdate(createChart);
-
+  afterUpdate(createChart);
 </script>
 
+<div class="col s12 m6">
+  <div class="card grey darken-4">
+    <div class="card-content white-text">
+      <span class="card-title">{data.cardTitle}</span>
+      <!-- DODO works, but might need fixing - shows the ratio it was loaded in -->
+      <canvas
+        id={canvasID}
+        width={window.screen.width <= 480 ? '1' : '3'}
+        height="1" />
+    </div>
+  </div>
+</div>

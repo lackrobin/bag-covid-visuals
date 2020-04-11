@@ -1,126 +1,118 @@
 <script>
-import {onMount} from "svelte";
-import '../node_modules/materialize-css/dist/css/materialize.min.css';
-import '../node_modules/materialize-css/dist/js/materialize.min.js';
-import Header from './Header.svelte';
-import Chart from './Chart.svelte';
-import Preloader from './Preloader.svelte';
-import {getEpicurveChartData,
-getTotalDeathChartData, 
-getTotalHospitChartData,
-getTotalInfectionAgeChartData, 
-getHospitCurveChartData,
-getDeathCurveChartData,
-getInfectionCurveChartData,
-getInfectionPerDayChartData,
-getHospitPerDayChartData,
-getDeathPerDayChartData} from "./util/chartDataUtils"; 
+  import { onMount } from "svelte";
+  import "../node_modules/materialize-css/dist/css/materialize.min.css";
+  import "../node_modules/materialize-css/dist/js/materialize.min.js";
+  import Header from "./Header.svelte";
+  import Chart from "./Chart.svelte";
+  import Preloader from "./Preloader.svelte";
+  import {
+    getEpicurveChartData,
+    getTotalDeathChartData,
+    getTotalHospitChartData,
+    getTotalInfectionAgeChartData,
+    getHospitCurveChartData,
+    getDeathCurveChartData,
+    getInfectionCurveChartData,
+    getInfectionPerDayChartData,
+    getHospitPerDayChartData,
+    getDeathPerDayChartData
+  } from "./util/chartDataUtils";
 
+  const baseURL = "https://bag-covid-api.herokuapp.com/api/";
+  let parsedHospitData = loadHospitDataFromAPI();
 
-const baseURL = 'https://bag-covid-api.herokuapp.com/api/';
-let parsedHospitData = loadHospitDataFromAPI();
+  async function loadHospitDataFromAPI() {
+    let parsed = [];
+    const res = await fetch(baseURL + "hospit");
+    let data = await res.json();
+    if (res.ok) {
+      parsed.push(getHospitCurveChartData(data));
+      parsed.push(getHospitPerDayChartData(data));
+      return parsed;
+    } else {
+      throw new Error(data);
+    }
+  }
+  let parsedInfectionData = loadInfectedDataFromAPI();
 
-async function loadHospitDataFromAPI(){
-	let parsed = [];
-	const res = await fetch(baseURL+"hospit");
-	let data = await res.json();
-	if (res.ok) {
-		parsed.push(getHospitCurveChartData(data));
-		parsed.push(getHospitPerDayChartData(data));
-		return parsed;
-	} else {
-		throw new Error(data);
-	}
-}
-let parsedInfectionData = loadInfectedDataFromAPI();
+  async function loadInfectedDataFromAPI() {
+    let parsed = [];
+    const res = await fetch(baseURL + "infection");
+    let data = await res.json();
+    if (res.ok) {
+      parsed.push(getInfectionCurveChartData(data));
+      parsed.push(getInfectionPerDayChartData(data));
+      return parsed;
+    } else {
+      throw new Error(data);
+    }
+  }
 
-async function loadInfectedDataFromAPI(){
-	let parsed = [];
-	const res = await fetch(baseURL+"infection");
-	let data = await res.json();
-	if (res.ok) {
-		parsed.push(getInfectionCurveChartData(data));
-		parsed.push(getInfectionPerDayChartData(data));
-		return parsed;
-	} else {
-		throw new Error(data);
-	}
-}
+  let parsedDeathData = loadDeathDataFromAPI();
 
-let parsedDeathData = loadDeathDataFromAPI();
+  async function loadDeathDataFromAPI() {
+    let parsed = [];
+    const res = await fetch(baseURL + "death");
+    let data = await res.json();
+    if (res.ok) {
+      parsed.push(getDeathCurveChartData(data));
+      parsed.push(getDeathPerDayChartData(data));
+      return parsed;
+    } else {
+      throw new Error(data);
+    }
+  }
 
-async function loadDeathDataFromAPI(){
-	let parsed = [];
-	const res = await fetch(baseURL+"death");
-	let data = await res.json();
-	if (res.ok) {
-		parsed.push(getDeathCurveChartData(data));
-		parsed.push(getDeathPerDayChartData(data));
-		return parsed;
-	} else {
-		throw new Error(data);
-	}
-}
+  let parsedData = loadDataFromAPI();
 
-
-let parsedData = loadDataFromAPI();
-
-async function loadDataFromAPI(){
-	let parsedData = [];
-	const res = await fetch(baseURL+"data/latest");
-	let data = await res.json();
-	if (res.ok) {
-	parsedData.push(getEpicurveChartData(data));
-	parsedData.push(getTotalDeathChartData(data));
-	parsedData.push(getTotalHospitChartData(data));
-	parsedData.push(getTotalInfectionAgeChartData(data));
-		return parsedData;
-	} else {
-		throw new Error(data);
-	}
-}
-
+  async function loadDataFromAPI() {
+    let parsedData = [];
+    const res = await fetch(baseURL + "data/latest");
+    let data = await res.json();
+    if (res.ok) {
+      parsedData.push(getEpicurveChartData(data));
+      parsedData.push(getTotalDeathChartData(data));
+      parsedData.push(getTotalHospitChartData(data));
+      parsedData.push(getTotalInfectionAgeChartData(data));
+      return parsedData;
+    } else {
+      throw new Error(data);
+    }
+  }
 </script>
 
-<Header/>
+<Header />
 
 <div class="row">
 
-{#await parsedData}
-<Preloader/>
-{:then items}
+  {#await parsedData}
+    <Preloader />
+  {:then items}
 
-{#each items as data}
-		<Chart {data}/>
-{/each}
-{:catch error}
-	{console.log(error)}
-{/await}
+    {#each items as data}
+      <Chart {data} />
+    {/each}
+  {:catch error}
+    {console.log(error)}
+  {/await}
 
-{#await parsedInfectionData then items}
-{#each items as data}
-		<Chart {data}/>
-{/each}
-{:catch error}
-	{console.log(error)}
-{/await}
+  {#await parsedInfectionData then items}
+    {#each items as data}
+      <Chart {data} />
+    {/each}
+  {/await}
 
-{#await parsedHospitData then items}
-{#each items as data}
-		<Chart {data}/>
-{/each}
+  {#await parsedHospitData then items}
+    {#each items as data}
+      <Chart {data} />
+    {/each}
 
-{:catch error}
-	{console.log(error)}
-{/await}
+  {/await}
 
-{#await parsedDeathData then items}
-{#each items as data}
-		<Chart {data}/>
-{/each}
+  {#await parsedDeathData then items}
+    {#each items as data}
+      <Chart {data} />
+    {/each}
 
-{:catch error}
-	{console.log(error)}
-{/await}
+  {/await}
 </div>
-
