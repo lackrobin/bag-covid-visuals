@@ -4,6 +4,11 @@
 
 http://bag-covid-visuals.surge.sh/
 
+
+## Data Source
+
+https://github.com/lackrobin/bag-covid-api
+
 ## App in action
 
 Fullscreen:
