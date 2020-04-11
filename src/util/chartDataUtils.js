@@ -297,10 +297,12 @@ function mapElementByAgeDelta(data, age) {
   });
 }
 
+// Pie Charts
 function getTotalDeathChartData(data){
     data = data["data"]["COVID19 Altersverteilung TodF"];
     let chartData = [];
     let chartLabels = [];
+    let chartTitle = "Age distribution of deaths";
 
     if (data[0].age!=="0 - 9"){
         chartData.push("0");
@@ -321,65 +323,73 @@ function getTotalDeathChartData(data){
         chartData.push(element.TotalDeaths);
         chartLabels.push(element.age);
     });
-    return {
-        cardTitle: "Age distribution of deaths",
-        type: "pie",
-        data: {
-            datasets: [{
-            data: chartData,
-            backgroundColor: chartColor,
-            borderColor: chartBorderColor
-        }],
-          labels: chartLabels,
-        }
-      };
+    return getPieChartData(chartData, chartLabels,chartTitle);
 }
+
+
 function getTotalHospitChartData(data){
     data = data["data"]["COVID19 Altersverteilung Hospit"];
     let chartData = [];
     let chartLabels = [];
+    let chartTitle = "Age distribution of hospitalizations";
 
 	data.forEach(element => {
         chartData.push(element.TotalHospitalized);
         chartLabels.push(element.age);
     });
-    return {
-        cardTitle: "Age distribution of hospitalizations",
-        type: "pie",
-        data: {
-            datasets: [{
-            data: chartData,
-            backgroundColor: chartColor,
-            borderColor: chartBorderColor
-        }],
-          labels: chartLabels,
-        }
-      };
+    return getPieChartData(chartData, chartLabels,chartTitle);
 }
 
 function getTotalInfectionAgeChartData(data){
     data = data["data"]["COVID19 Altersverteilung"];
     let chartData = [];
     let chartLabels = [];
-
+    let chartTitle = "Age distribution of Infections";
 	data.forEach(element => {
         chartData.push(element.totalInfectionCount);
         chartLabels.push(element.age);
     });
-    return {
-        cardTitle: "Age distribution of Infections",
-        type: "pie",
-        data: {
-            datasets: [{
-            data: chartData,
-            backgroundColor: chartColor,
-            borderColor: chartBorderColor
-        }],
-          labels: chartLabels,
-        }
-      };
+    return getPieChartData(chartData, chartLabels,chartTitle);
 }
 
+function getPieChartData(chartData, chartLabels, chartTitle) {
+  return {
+    cardTitle: `${chartTitle} (Total: ${chartData.reduce(function (a, b) {
+      return parseInt(a) + parseInt(b);
+    }, 0)})`,
+    type: "pie",
+    data: {
+      datasets: [{
+        data: chartData,
+        backgroundColor: chartColor,
+        borderColor: chartBorderColor
+      }],
+      labels: chartLabels
+    },
+    options: {
+      tooltips: {
+        callbacks: {
+          label: function (tooltipItem, data) {
+            var label = data.labels[tooltipItem.index] || '';
+            var value = data.datasets[0].data[tooltipItem.index];
+            console.log(value);
+            let sum = 0;
+            let dataArr = data.datasets[0].data;
+            dataArr.map(data => {
+              sum += parseInt(data);
+            });
+            let percentage = (value * 100 / sum).toFixed(2) + "%";
+            label += ' : ';
+            label += value;
+            label += ' = ';
+            label += percentage;
+            return label;
+          }
+        }
+      }
+    }
+  };
+}
 
 export {
   getEpicurveChartData,
