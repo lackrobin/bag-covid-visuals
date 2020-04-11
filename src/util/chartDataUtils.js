@@ -1,5 +1,5 @@
 import {getLastElementOfArray} from "./arrayUtils";
-import { parse } from "svelte/compiler";
+
 let chartColor = ['rgba(255, 99, 132, 0.2)', "rgba(241, 196, 15,0.2)", "rgba(41, 128, 185,0.2)", "rgba(243, 156, 18,0.2)", "rgba(46, 204, 113,0.2)", "rgba(231, 76, 60,0.2)", "rgba(142, 68, 173,0.2)", "rgba(44, 62, 80,0.2)", "rgba(189, 195, 199,0.2)", "rgba(211, 84, 0,0.2)", "rgba(52, 152, 219,0.2)"];
     
 let chartBorderColor = ['rgba(255,99,132,1)', "rgba(241, 196, 15,1.0)", "rgba(41, 128, 185,1.0)", "rgba(243, 156, 18,1.0)", "rgba(46, 204, 113,1.0)", "rgba(231, 76, 60,1.0)", "rgba(142, 68, 173,1.0)", "rgba(44, 62, 80,1.0)", "rgba(189, 195, 199,1.0)", "rgba(211, 84, 0,1.0)", "rgba(52, 152, 219,1.0)"];
@@ -29,6 +29,17 @@ data.forEach(element => {
         }]
       },
       options: {
+        tooltips: {
+          callbacks: {
+            labelColor: function (tooltipItem, chart) {
+              let data = chart.data.datasets[tooltipItem.datasetIndex];
+              return {
+                borderColor: data.borderColor,
+                backgroundColor: data.borderColor
+              };
+            }
+          }
+        },
         scales: {
           xAxes: [{
             type: 'time'
@@ -40,6 +51,7 @@ data.forEach(element => {
 
 function getHospitCurveChartData(data){
 let datasets = [];
+let chartTitle = "Hospitalization per age group";
 for (const age in data[0]) {
   if (data[0].hasOwnProperty(age) && age!=="date") {
     datasets.push(mapElementByAge(data, age));
@@ -47,55 +59,24 @@ for (const age in data[0]) {
 }
 datasets = getDatasetsFromDatasets(datasets);
 
-  return {
-      cardTitle: "Hospitalization per age group",
-      type: "line",
-      data: {
-          datasets: datasets
-      },
-      options: {
-        scales: {
-          xAxes: [{
-            type: 'time',
-            time: {
-              unit: 'day'
-            },
-          }]
-        }
-      }
-    };
+  return getMultiLineChartData(datasets, chartTitle);
 }
 
 function getDeathCurveChartData(data){
   let datasets = [];
+  let chartTitle = "Deaths per age group";
   for (const age in data[0]) {
     if (data[0].hasOwnProperty(age) && age!=="date") {
       datasets.push(mapElementByAge(data, age));
     }
   }
   datasets = getDatasetsFromDatasets(datasets);
-  
-    return {
-        cardTitle: "Deaths per age group",
-        type: "line",
-        data: {
-            datasets: datasets
-        },
-        options: {
-          scales: {
-            xAxes: [{
-              type: 'time',
-              time: {
-                unit: 'day'
-              },
-            }]
-          }
-        }
-      };
+    return getMultiLineChartData(datasets, chartTitle);
   }
 
   function getInfectionCurveChartData(data){
     let datasets = [];
+    let chartTitle = "Infections per age group";
     for (const age in data[0]) {
       if (data[0].hasOwnProperty(age) && age!=="date") {
         datasets.push(mapElementByAge(data, age));
@@ -103,27 +84,43 @@ function getDeathCurveChartData(data){
     }
     datasets = getDatasetsFromDatasets(datasets);
     
-      return {
-          cardTitle: "Infections per age group",
-          type: "line",
-          data: {
-              datasets: datasets
-          },
-          options: {
-            scales: {
-              xAxes: [{
-                type: 'time',
-                time: {
-                  unit: 'day'
-                },
-              }]
-            }
-          }
-        };
+      return getMultiLineChartData(datasets, chartTitle);
     }
+
+function getMultiLineChartData(datasets, chartTitle) {
+  return {
+    cardTitle: chartTitle,
+    type: "line",
+    data: {
+      datasets: datasets
+    },
+    options: {
+      tooltips: {
+        callbacks: {
+          labelColor: function (tooltipItem, chart) {
+            let data = chart.data.datasets[tooltipItem.datasetIndex];
+            return {
+              borderColor: data.borderColor,
+              backgroundColor: data.borderColor
+            };
+          }
+        }
+      },
+      scales: {
+        xAxes: [{
+          type: 'time',
+          time: {
+            unit: 'day'
+          },
+        }]
+      }
+    }
+  };
+}
 
     function getInfectionPerDayChartData(data){
       let datasets = [];
+      let chartTitle= "Daily infections per age group";
       for (const age in data[0]) {
         if (data[0].hasOwnProperty(age) && age!=="date") {
           datasets.push(mapElementByAgeDelta(data, age));
@@ -131,31 +128,12 @@ function getDeathCurveChartData(data){
       }
       datasets = getDatasetsFromDatasets(datasets);
       
-        return {
-            cardTitle: "Daily infections per age group",
-            type: "bar",
-            data: {
-                datasets: datasets
-            },
-            options: {
-              scales: {
-                xAxes: [{
-                  stacked: true,
-                  type: 'time',
-                  time: {
-                    unit: 'day'
-                  },
-                }],
-                yAxes: [{
-                  stacked: true
-              }]
-              }
-            }
-          };
+        return getBarChartData(datasets, chartTitle);
       }
 
       function getDeathPerDayChartData(data){
         let datasets = [];
+        let chartTitle = "Daily deaths per age group";
         for (const age in data[0]) {
           if (data[0].hasOwnProperty(age) && age!=="date") {
             datasets.push(mapElementByAgeDelta(data, age));
@@ -163,30 +141,11 @@ function getDeathCurveChartData(data){
         }
         datasets = getDatasetsFromDatasets(datasets);
         
-          return {
-              cardTitle: "Daily deaths per age group",
-              type: "bar",
-              data: {
-                  datasets: datasets
-              },
-              options: {
-                scales: {
-                  xAxes: [{
-                    stacked: true,
-                    type: 'time',
-                    time: {
-                      unit: 'day'
-                    },
-                  }],
-                  yAxes: [{
-                    stacked: true
-                }]
-                }
-              }
-            };
+          return getBarChartData(datasets, chartTitle);
         }
         function getHospitPerDayChartData(data){
           let datasets = [];
+          let chartTitle = "Daily hospitalization per age group";
           for (const age in data[0]) {
             if (data[0].hasOwnProperty(age) && age!=="date") {
               datasets.push(mapElementByAgeDelta(data, age));
@@ -194,28 +153,43 @@ function getDeathCurveChartData(data){
           }
           datasets = getDatasetsFromDatasets(datasets);
           
-            return {
-                cardTitle: "Daily hospitalization per age group",
-                type: "bar",
-                data: {
-                    datasets: datasets
-                },
-                options: {
-                  scales: {
-                    xAxes: [{
-                      stacked: true,
-                      type: 'time',
-                      time: {
-                        unit: 'day'
-                      },
-                    }],
-                    yAxes: [{
-                      stacked: true
-                  }]
-                  }
-                }
-              };
+            return getBarChartData(datasets, chartTitle);
           }
+function getBarChartData(datasets, chartTitle) {
+  return {
+    cardTitle: chartTitle,
+    type: "bar",
+    data: {
+      datasets: datasets
+    },
+    options: {
+      tooltips: {
+        callbacks: {
+          labelColor: function (tooltipItem, chart) {
+            let data = chart.data.datasets[tooltipItem.datasetIndex];
+            return {
+              borderColor: data.borderColor,
+              backgroundColor: data.borderColor
+            };
+          }
+        }
+      },
+      scales: {
+        xAxes: [{
+          stacked: true,
+          type: 'time',
+          time: {
+            unit: 'day'
+          },
+        }],
+        yAxes: [{
+          stacked: true
+        }]
+      }
+    }
+  };
+}
+
 function getDatasetsFromDatasets(datasets) {
   let indexAddition = 0;
 
@@ -369,6 +343,13 @@ function getPieChartData(chartData, chartLabels, chartTitle) {
     options: {
       tooltips: {
         callbacks: {
+          labelColor: function(tooltipItem, chart) {
+            let data = chart.data.datasets[0];
+            return {
+                borderColor: data.borderColor[tooltipItem.index],
+                backgroundColor: data.borderColor[tooltipItem.index]
+            };
+        },
           label: function (tooltipItem, data) {
             var label = data.labels[tooltipItem.index] || '';
             var value = data.datasets[0].data[tooltipItem.index];
