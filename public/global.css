@@ -2,3 +2,8 @@ body {
  color: rgb(194, 194, 194);
 }
 
+.date-slider {
+    height :40px;
+    padding-top: 10px;
+
+}

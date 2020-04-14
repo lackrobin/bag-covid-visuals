@@ -42,7 +42,10 @@ function getEpicurveChartData(data) {
       },
       scales: {
         xAxes: [{
-          type: 'time'
+          type: 'time',
+          time: {
+            unit: 'day'
+          },
         }]
       }
     }
@@ -238,7 +241,6 @@ function getDatasetsFromDatasets(datasets) {
     };
     return dataset;
   });
-  console.log(fillupAge);
   return fillupAge.concat(parsedDatasets);
 }
 
@@ -253,7 +255,6 @@ function mapElementByAge(data, age) {
 }
 
 function mapElementByAgeDelta(data, age) {
-  let ref = data;
   return data.map((dateGroup, i) => {
     let chartElement = {};
     chartElement["t"] = dateGroup.date;
@@ -351,7 +352,6 @@ function getPieChartData(chartData, chartLabels, chartTitle) {
           label: function (tooltipItem, data) {
             var label = data.labels[tooltipItem.index] || '';
             var value = data.datasets[0].data[tooltipItem.index];
-            console.log(value);
             let sum = 0;
             let dataArr = data.datasets[0].data;
             dataArr.map(data => {
