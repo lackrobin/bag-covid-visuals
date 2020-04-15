@@ -1,8 +1,8 @@
 <script>
   import { afterUpdate, onMount } from "svelte";
   import Chart from "chart.js";
-  import "../node_modules/materialize-css/extras/noUiSlider/nouislider.css";
-  import * as noUiSlider from "../node_modules/materialize-css/extras/noUiSlider/nouislider";
+  import * as noUiSlider from 'nouislider';
+  import 'nouislider/distribute/nouislider.css';
   import wNumb from "wnumb";
   import { deepCopyObject } from "./util/objectUtils";
 
