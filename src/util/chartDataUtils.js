@@ -194,54 +194,18 @@ function getBarChartData(datasets, chartTitle) {
 }
 
 function getDatasetsFromDatasets(datasets) {
-  let indexAddition = 0;
 
-  let fillupAge = [];
-  if (datasets[0][0].age !== "0 - 9") {
-    let dataset = {
-      label: "0 - 9",
-      data: [{ x: new Date(datasets[0][0].t), y: 0 }],
-      backgroundColor: chartColor[indexAddition],
-      borderColor: chartBorderColor[indexAddition],
-      borderWidth: 1
-    };
-    fillupAge.push(dataset);
-    indexAddition++;
-  }
-  if (datasets[1][0].age !== "10 - 19") {
-    let dataset = {
-      label: "10 - 19",
-      data: [{ x: new Date(datasets[0][0].t), y: 0 }],
-      backgroundColor: chartColor[indexAddition],
-      borderColor: chartBorderColor[indexAddition],
-      borderWidth: 1
-    };
-    fillupAge.push(dataset);
-    indexAddition++;
-  }
-  if (datasets[2][0].age !== "20 - 29") {
-    let dataset = {
-      label: "20 - 29",
-      data: [{ x: new Date(datasets[0][0].t), y: 0 }],
-      backgroundColor: chartColor[indexAddition],
-      borderColor: chartBorderColor[indexAddition],
-      borderWidth: 1
-    };
-    fillupAge.push(dataset);
-    indexAddition++;
-  }
-  
   const parsedDatasets = datasets.map((chartData, index) => {
     let dataset = {
-      label: chartData[0].age,
+      label: chartData[chartData.length-1].age,
       data: chartData.map(d => { return { x: new Date(d.t), y: d.y }; }),
-      backgroundColor: chartColor[index + indexAddition],
-      borderColor: chartBorderColor[index + indexAddition],
+      backgroundColor: chartColor[index],
+      borderColor: chartBorderColor[index],
       borderWidth: 1
     };
     return dataset;
   });
-  return fillupAge.concat(parsedDatasets);
+  return parsedDatasets;
 }
 
 function mapElementByAge(data, age) {
@@ -276,21 +240,6 @@ function getTotalDeathChartData(data) {
   let chartData = [];
   let chartLabels = [];
   let chartTitle = "Age distribution of deaths";
-
-  if (data[0].age !== "0 - 9") {
-    chartData.push("0");
-    chartLabels.push("0 - 9");
-  }
-
-  if (data[1].age !== "10 - 19") {
-    chartData.push("0");
-    chartLabels.push("10 - 19");
-  }
-
-  if (data[2].age !== "20 - 29") {
-    chartData.push("0");
-    chartLabels.push("20 - 29");
-  }
 
   data.forEach(element => {
     chartData.push(element.TotalDeaths);
