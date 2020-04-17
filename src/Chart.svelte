@@ -98,7 +98,7 @@
 <div class="col s12 m6">
   <div class="card grey darken-4">
     <div class="card-content white-text">
-      <span class="card-title">
+      <span class="card-title double-height-title">
         {data.cardTitle}
         <div class="date-slider">
           <div id="{canvasID}-slider" />

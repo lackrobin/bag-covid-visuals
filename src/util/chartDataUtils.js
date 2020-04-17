@@ -5,12 +5,13 @@ let chartColor = ['rgba(255, 99, 132, 0.2)', "rgba(241, 196, 15,0.2)", "rgba(41,
 let chartBorderColor = ['rgba(255,99,132,1)', "rgba(241, 196, 15,1.0)", "rgba(41, 128, 185,1.0)", "rgba(243, 156, 18,1.0)", "rgba(46, 204, 113,1.0)", "rgba(231, 76, 60,1.0)", "rgba(142, 68, 173,1.0)", "rgba(44, 62, 80,1.0)", "rgba(189, 195, 199,1.0)", "rgba(211, 84, 0,1.0)", "rgba(52, 152, 219,1.0)"];
 
 function getEpicurveChartData(data) {
-  data = data["data"]["COVID19 Epikurve"];
+  console.log(data);
+  data = data["data"]["COVID19 Zahlen"];
   let chartData = [];
   data.forEach(element => {
     let chartElement = {};
     chartElement["t"] = new Date(element.date);
-    chartElement["y"] = parseInt(element.cases, 10);
+    chartElement["y"] = parseInt(element["dailyCases"], 10);
     if (chartData.length > 0) {
       chartElement["y"] = chartElement["y"] + getLastElementOfArray(chartData).y;
     }
@@ -277,8 +278,8 @@ function getTotalInfectionAgeChartData(data) {
 function getPieChartData(chartData, chartLabels, chartTitle) {
   return {
     cardTitle: `${chartTitle} (Total: ${chartData.reduce(function (a, b) {
-      return parseInt(a) + parseInt(b);
-    }, 0)})`,
+      return parseInt(a) + parseInt(b) ;
+    }, 0)}), 15.04.2020 (BAG Stopped Providing this data)`,
     type: "pie",
     data: {
       datasets: [{
@@ -292,27 +293,31 @@ function getPieChartData(chartData, chartLabels, chartTitle) {
       tooltips: {
         callbacks: {
           labelColor: function (tooltipItem, chart) {
-            let data = chart.data.datasets[0];
-            return {
-              borderColor: data.borderColor[tooltipItem.index],
-              backgroundColor: data.borderColor[tooltipItem.index]
-            };
-          },
-          label: function (tooltipItem, data) {
-            var label = data.labels[tooltipItem.index] || '';
-            var value = data.datasets[0].data[tooltipItem.index];
-            let sum = 0;
-            let dataArr = data.datasets[0].data;
-            dataArr.map(data => {
-              sum += parseInt(data);
-            });
-            let percentage = (value * 100 / sum).toFixed(2) + "%";
-            label += ' : ';
-            label += value;
-            label += ' = ';
-            label += percentage;
-            return label;
+            console.log(chart);
+            console.log(tooltipItem);
+            // let data = chart.data.datasets[0];
+            
+            // return {
+            //   borderColor: data.borderColor[tooltipItem.index],
+            //   backgroundColor: data.borderColor[tooltipItem.index]
+            // };
           }
+          // ,
+          // label: function (tooltipItem, data) {
+          //   var label = data.labels[tooltipItem.index] || '';
+          //   var value = data.datasets[0].data[tooltipItem.index];
+          //   let sum = 0;
+          //   let dataArr = data.datasets[0].data;
+          //   dataArr.map(data => {
+          //     sum += parseInt(data);
+          //   });
+          //   let percentage = (value * 100 / sum).toFixed(2) + "%";
+          //   label += ' : ';
+          //   label += value;
+          //   label += ' = ';
+          //   label += percentage;
+          //   return label;
+          // }
         }
       }
     }

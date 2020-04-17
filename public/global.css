@@ -7,6 +7,9 @@ body {
     padding-top: 10px;
 
 }
+.double-height-title{
+    height: 120px;
+}
 
 .noUi-connect {
     background: #3448AF;

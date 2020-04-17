@@ -18,7 +18,9 @@
     getDeathPerDayChartData
   } from "./util/chartDataUtils";
 
-  const baseURL = "https://bag-covid-api.herokuapp.com/api/";
+  // const baseURL = "https://bag-covid-api.herokuapp.com/api/";
+  const baseURL = "http://localhost:3000/api/";
+  
   let parsedHospitData = loadHospitDataFromAPI();
 
   async function loadHospitDataFromAPI() {
@@ -63,29 +65,44 @@
     }
   }
 
-  let parsedData = loadDataFromAPI();
-
-  async function loadDataFromAPI() {
+let parsedNewData = loadNewDataFromAPI();
+  async function loadNewDataFromAPI() {
     let parsedData = [];
     const res = await fetch(baseURL + "data/latest");
     let data = await res.json();
     if (res.ok) {
       parsedData.push(getEpicurveChartData(data));
+      return parsedData;
+    } else {
+      throw new Error(data);
+    }
+
+  
+  }
+
+  let parsedOldData = loadOldDataFromAPI();
+
+  async function loadOldDataFromAPI() {
+    let parsedData = [];
+    const res = await fetch(baseURL + "data/2020-04-15");
+    let data = await res.json();
+    if (res.ok) {
       parsedData.push(getTotalDeathChartData(data));
       parsedData.push(getTotalHospitChartData(data));
-      parsedData.push(getTotalInfectionAgeChartData(data));
+      // parsedData.push(getTotalInfectionAgeChartData(data));
       return parsedData;
     } else {
       throw new Error(data);
     }
   }
+
 </script>
 
 <Header />
 
 <div class="row">
 
-  {#await parsedData}
+  {#await parsedNewData}
     <Preloader />
   {:then items}
 
@@ -94,6 +111,12 @@
     {/each}
   {:catch error}
     {console.log(error)}
+  {/await}
+
+  {#await parsedOldData then items}
+    {#each items as data}
+      <Chart {data} />
+    {/each}
   {/await}
 
   {#await parsedInfectionData then items}
@@ -108,6 +131,7 @@
     {/each}
 
   {/await}
+  
 
   {#await parsedDeathData then items}
     {#each items as data}
