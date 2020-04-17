@@ -7,6 +7,8 @@
   import Preloader from "./Preloader.svelte";
   import {
     getEpicurveChartData,
+    getHospitcurveChartData,
+    getDeathcurveChartData,
     getTotalDeathChartData,
     getTotalHospitChartData,
     getTotalInfectionAgeChartData,
@@ -72,6 +74,8 @@ let parsedNewData = loadNewDataFromAPI();
     let data = await res.json();
     if (res.ok) {
       parsedData.push(getEpicurveChartData(data));
+      parsedData.push(getDeathcurveChartData(data));
+      parsedData.push(getHospitcurveChartData(data));
       return parsedData;
     } else {
       throw new Error(data);
@@ -89,7 +93,7 @@ let parsedNewData = loadNewDataFromAPI();
     if (res.ok) {
       parsedData.push(getTotalDeathChartData(data));
       parsedData.push(getTotalHospitChartData(data));
-      // parsedData.push(getTotalInfectionAgeChartData(data));
+      parsedData.push(getTotalInfectionAgeChartData(data));
       return parsedData;
     } else {
       throw new Error(data);

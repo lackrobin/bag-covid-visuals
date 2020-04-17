@@ -5,24 +5,47 @@ let chartColor = ['rgba(255, 99, 132, 0.2)', "rgba(241, 196, 15,0.2)", "rgba(41,
 let chartBorderColor = ['rgba(255,99,132,1)', "rgba(241, 196, 15,1.0)", "rgba(41, 128, 185,1.0)", "rgba(243, 156, 18,1.0)", "rgba(46, 204, 113,1.0)", "rgba(231, 76, 60,1.0)", "rgba(142, 68, 173,1.0)", "rgba(44, 62, 80,1.0)", "rgba(189, 195, 199,1.0)", "rgba(211, 84, 0,1.0)", "rgba(52, 152, 219,1.0)"];
 
 function getEpicurveChartData(data) {
-  console.log(data);
   data = data["data"]["COVID19 Zahlen"];
+  let colName = "dailyCases";
+  let cardTitle = "Cases in Switzerland";
+  let lineLabel = "Cases";
+
+  return getCurveChartData(data, colName, cardTitle, lineLabel);
+}
+function getHospitcurveChartData(data) {
+  data = data["data"]["COVID19 Zahlen"];
+  let colName = "dailyHospit";
+  let cardTitle = "Hospitalizations in Switzerland";
+  let lineLabel = "Hospitalizations";
+
+  return getCurveChartData(data, colName, cardTitle, lineLabel);
+}
+function getDeathcurveChartData(data) {
+  data = data["data"]["COVID19 Zahlen"];
+  let colName = "dailyDeaths";
+  let cardTitle = "Deaths in Switzerland";
+  let lineLabel = "Deaths";
+
+  return getCurveChartData(data, colName, cardTitle, lineLabel);
+}
+
+function getCurveChartData(data, colName, cardTitle, lineLabel) {
   let chartData = [];
   data.forEach(element => {
     let chartElement = {};
     chartElement["t"] = new Date(element.date);
-    chartElement["y"] = parseInt(element["dailyCases"], 10);
+    chartElement["y"] = parseInt(element[colName]!==undefined ? element[colName]:"0", 10);
     if (chartData.length > 0) {
       chartElement["y"] = chartElement["y"] + getLastElementOfArray(chartData).y;
     }
     chartData.push(chartElement);
   });
   return {
-    cardTitle: "Cases in Switzerland",
+    cardTitle: cardTitle,
     type: "line",
     data: {
       datasets: [{
-        label: 'Cases',
+        label: lineLabel,
         data: chartData,
         backgroundColor: chartColor[0],
         borderColor: chartBorderColor[0],
@@ -326,6 +349,8 @@ function getPieChartData(chartData, chartLabels, chartTitle) {
 
 export {
   getEpicurveChartData,
+  getHospitcurveChartData,
+  getDeathcurveChartData,
   getTotalDeathChartData,
   getTotalHospitChartData,
   getTotalInfectionAgeChartData,
