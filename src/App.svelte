@@ -18,8 +18,8 @@
     getDeathPerDayChartData
   } from "./util/chartDataUtils";
 
-  // const baseURL = "https://bag-covid-api.herokuapp.com/api/";
-  const baseURL = "http://localhost:3000/api/";
+  const baseURL = "https://bag-covid-api.herokuapp.com/api/";
+  // const baseURL = "http://localhost:3000/api/";
   
   let parsedHospitData = loadHospitDataFromAPI();
 
