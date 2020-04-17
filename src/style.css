@@ -1,0 +1,11 @@
+.noUi-connect{
+    background: rgba(41, 128, 185,1);
+}
+
+.noUi-handle {
+    background: rgba(26, 132, 202, 1);
+}
+
+.noUi-target{
+    background: rgba(41, 128, 185,0.3);
+}

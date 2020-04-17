@@ -12,10 +12,13 @@
   .icon:focus {
     opacity: 0.5;
   }
+  .header-color{
+    background: rgba(41, 128, 185,0.3);
+  }
 </style>
 
 <div class="row header">
-  <div class="col s12 valign center light-blue darken-1">
+  <div class="col s12 valign center header-color">
     <h3>
       BAG COVID-19 Data Visualization
       <a href="https://twitter.com/lack_robin/">

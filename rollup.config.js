@@ -4,10 +4,11 @@ import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
+import copy from 'rollup-plugin-copy'
 
 const production = !process.env.ROLLUP_WATCH;
 
-export default {
+export default [{
 	input: 'src/main.js',
 	output: {
 		sourcemap: true,
@@ -16,6 +17,12 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
+		copy({
+			targets: [
+			  { src: 'src/style.css', dest: 'public/build' }
+			]
+		}),
+		css({output: 'public/build/extra.css'}),
 		svelte({
 			// enable run-time checks when not in production
 			dev: !production,
@@ -25,7 +32,7 @@ export default {
 				css.write('public/build/bundle.css');
 			}
 		}),
-		css({output: 'public/build/extra.css'}),
+
 
 		// If you have external dependencies installed from
 		// npm, you'll most likely need these plugins. In
@@ -53,7 +60,8 @@ export default {
 	watch: {
 		clearScreen: false
 	}
-};
+}
+];
 
 function serve() {
 	let started = false;

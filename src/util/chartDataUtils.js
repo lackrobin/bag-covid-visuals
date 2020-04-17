@@ -1,8 +1,8 @@
 import { getLastElementOfArray } from "./arrayUtils";
 
-let chartColor = ['rgba(255, 99, 132, 0.2)', "rgba(241, 196, 15,0.2)", "rgba(41, 128, 185,0.2)", "rgba(243, 156, 18,0.2)", "rgba(46, 204, 113,0.2)", "rgba(231, 76, 60,0.2)", "rgba(142, 68, 173,0.2)", "rgba(44, 62, 80,0.2)", "rgba(189, 195, 199,0.2)", "rgba(211, 84, 0,0.2)", "rgba(52, 152, 219,0.2)"];
+let chartColor = ["rgba(41, 128, 185,0.2)",'rgba(255, 99, 132, 0.2)', "rgba(241, 196, 15,0.2)",  "rgba(243, 156, 18,0.2)", "rgba(46, 204, 113,0.2)", "rgba(231, 76, 60,0.2)", "rgba(142, 68, 173,0.2)", "rgba(44, 62, 80,0.2)", "rgba(189, 195, 199,0.2)", "rgba(211, 84, 0,0.2)", "rgba(52, 152, 219,0.2)"];
 
-let chartBorderColor = ['rgba(255,99,132,1)', "rgba(241, 196, 15,1.0)", "rgba(41, 128, 185,1.0)", "rgba(243, 156, 18,1.0)", "rgba(46, 204, 113,1.0)", "rgba(231, 76, 60,1.0)", "rgba(142, 68, 173,1.0)", "rgba(44, 62, 80,1.0)", "rgba(189, 195, 199,1.0)", "rgba(211, 84, 0,1.0)", "rgba(52, 152, 219,1.0)"];
+let chartBorderColor = ["rgba(41, 128, 185,1.0)", 'rgba(255,99,132,1)', "rgba(241, 196, 15,1.0)",  "rgba(243, 156, 18,1.0)", "rgba(46, 204, 113,1.0)", "rgba(231, 76, 60,1.0)", "rgba(142, 68, 173,1.0)", "rgba(44, 62, 80,1.0)", "rgba(189, 195, 199,1.0)", "rgba(211, 84, 0,1.0)", "rgba(52, 152, 219,1.0)"];
 
 function getEpicurveChartData(data) {
   data = data["data"]["COVID19 Zahlen"];
@@ -27,6 +27,75 @@ function getDeathcurveChartData(data) {
   let lineLabel = "Deaths";
 
   return getCurveChartData(data, colName, cardTitle, lineLabel);
+}
+
+function getDeathBarChartData(data) {
+  data = data["data"]["COVID19 Zahlen"];
+  let colName = "dailyDeaths";
+  let cardTitle = "Daily Deaths in Switzerland";
+  let lineLabel = "Deaths";
+
+  return getSingleBarChartData(data, colName, cardTitle, lineLabel);
+}
+function getHospitBarChartData(data) {
+  data = data["data"]["COVID19 Zahlen"];
+  let colName = "dailyHospit";
+  let cardTitle = "Daily Hospitalizations in Switzerland";
+  let lineLabel = "Hospitalizations";
+
+  return getSingleBarChartData(data, colName, cardTitle, lineLabel);
+}
+function getCasesBarChartData(data) {
+  data = data["data"]["COVID19 Zahlen"];
+  let colName = "dailyCases";
+  let cardTitle = "Daily Cases in Switzerland";
+  let lineLabel = "Cases";
+
+  return getSingleBarChartData(data, colName, cardTitle, lineLabel);
+}
+
+function getSingleBarChartData(data, colName, cardTitle, lineLabel) {
+  let chartData = [];
+  data.forEach(element => {
+    let chartElement = {};
+    chartElement["t"] = new Date(element.date);
+    chartElement["y"] = parseInt(element[colName]!==undefined ? element[colName]:"0", 10);
+    chartData.push(chartElement);
+  });
+  return {
+    cardTitle: cardTitle,
+    type: "bar",
+    data: {
+      datasets: [{
+        label: lineLabel,
+        data: chartData,
+        backgroundColor: chartColor[0],
+        borderColor: chartBorderColor[0],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      tooltips: {
+        callbacks: {
+          labelColor: function (tooltipItem, chart) {
+            let data = chart.data.datasets[tooltipItem.datasetIndex];
+            return {
+              borderColor: data.borderColor,
+              backgroundColor: data.borderColor
+            };
+          }
+        }
+      },
+      scales: {
+        xAxes: [{
+          type: 'time',
+          time: {
+            unit: 'day'
+          },
+        }]
+      }
+    }
+  };
 }
 
 function getCurveChartData(data, colName, cardTitle, lineLabel) {
@@ -78,7 +147,7 @@ function getCurveChartData(data, colName, cardTitle, lineLabel) {
 
 function getHospitCurveChartData(data) {
   let datasets = [];
-  let chartTitle = "Hospitalization per age group";
+  let chartTitle = "Hospitalization per age group (BAG stopped providing this data on 15.04.2020)";
   for (const age in data[0]) {
     if (data[0].hasOwnProperty(age) && age !== "date") {
       datasets.push(mapElementByAge(data, age));
@@ -91,7 +160,7 @@ function getHospitCurveChartData(data) {
 
 function getDeathCurveChartData(data) {
   let datasets = [];
-  let chartTitle = "Deaths per age group";
+  let chartTitle = "Deaths per age group (BAG stopped providing this data on 15.04.2020)";
   for (const age in data[0]) {
     if (data[0].hasOwnProperty(age) && age !== "date") {
       datasets.push(mapElementByAge(data, age));
@@ -103,7 +172,7 @@ function getDeathCurveChartData(data) {
 
 function getInfectionCurveChartData(data) {
   let datasets = [];
-  let chartTitle = "Infections per age group";
+  let chartTitle = "Infections per age group ";
   for (const age in data[0]) {
     if (data[0].hasOwnProperty(age) && age !== "date") {
       datasets.push(mapElementByAge(data, age));
@@ -160,7 +229,7 @@ function getInfectionPerDayChartData(data) {
 
 function getDeathPerDayChartData(data) {
   let datasets = [];
-  let chartTitle = "Daily deaths per age group";
+  let chartTitle = "Daily deaths per age group (BAG stopped providing this data on 15.04.2020)";
   for (const age in data[0]) {
     if (data[0].hasOwnProperty(age) && age !== "date") {
       datasets.push(mapElementByAgeDelta(data, age));
@@ -172,7 +241,7 @@ function getDeathPerDayChartData(data) {
 }
 function getHospitPerDayChartData(data) {
   let datasets = [];
-  let chartTitle = "Daily hospitalization per age group";
+  let chartTitle = "Daily hospitalization per age group (BAG stopped providing this data on 15.04.2020)";
   for (const age in data[0]) {
     if (data[0].hasOwnProperty(age) && age !== "date") {
       datasets.push(mapElementByAgeDelta(data, age));
@@ -302,7 +371,7 @@ function getPieChartData(chartData, chartLabels, chartTitle) {
   return {
     cardTitle: `${chartTitle} (Total: ${chartData.reduce(function (a, b) {
       return parseInt(a) + parseInt(b) ;
-    }, 0)}), 15.04.2020 (BAG Stopped Providing this data)`,
+    }, 0)}), 15.04.2020 (BAG stopped providing this data)`,
     type: "pie",
     data: {
       datasets: [{
@@ -351,6 +420,9 @@ export {
   getEpicurveChartData,
   getHospitcurveChartData,
   getDeathcurveChartData,
+  getHospitBarChartData,
+  getDeathBarChartData,
+  getCasesBarChartData,
   getTotalDeathChartData,
   getTotalHospitChartData,
   getTotalInfectionAgeChartData,

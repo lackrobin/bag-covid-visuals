@@ -2,7 +2,6 @@
   import { afterUpdate, onMount } from "svelte";
   import Chart from "chart.js";
   import * as noUiSlider from 'nouislider';
-  import 'nouislider/distribute/nouislider.css';
   import wNumb from "wnumb";
   import { deepCopyObject } from "./util/objectUtils";
 
@@ -59,9 +58,10 @@
 
       });
     } else {
-      if (data.type === "line") {
+      if (data.type === "line" || data.type === "bar") {
         hasSlider = true;
         var slider = document.getElementById(canvasID + "-slider");
+        slider.classList.add("mystyle");
         noUiSlider.default.create(slider, {
           start: [0, data.data.datasets[0].data.length - 1],
           connect: true,
